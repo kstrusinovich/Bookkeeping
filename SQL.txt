@@ -1,0 +1,89 @@
+create schema if not exists HomeAccounting;
+use HomeAccounting;
+
+create table family(
+	id				smallint		primary key not null auto_increment,
+    fio				char(50)		not null,
+    family_member	char(20)		not null,
+    age				smallint				not null
+);
+
+create table accrual_clause(
+	id			smallint		primary key not null auto_increment,
+    name		char(50)		not null
+);
+
+create table exhibit_article(
+	id		smallint		primary key not null auto_increment,
+    name	char(50)		not null
+);
+
+create table accrual(
+	id_family		smallint 	not null,
+    id_accr_clause	smallint	not null,
+    date			date		not null,
+    sum				double		not null,
+
+    foreign key (id_family) references family(id),
+    foreign key (id_accr_clause) references accrual_clause(id)
+);
+
+create table crosss(
+	id_accr 	smallint 	not null,
+    id_exh		smallint		not null,
+
+    foreign key (id_accr) references accrual_clause(id),
+    foreign key (id_exh) references exhibit_article(id)
+);
+
+create table sum_exhibition(
+	id_exh		smallint	not null,
+    sum_exh		double	not null,
+
+    foreign key (id_exh) references exhibit_article(id)
+);
+
+drop table accrual;
+drop table sum_exhibition;
+
+
+use HomeAccounting;
+
+insert into family (fio, family_member, age) values ('Дроздов Андрей Игоревич', 'сын', 23);
+insert into family (fio, family_member, age) values ('Дроздов Татьяна Игоревна', 'дочь', 25);
+insert into family (fio, family_member, age) values ('Дроздов Никита Игоревич', 'сын', 14);
+insert into family (fio, family_member, age) values ('Дроздов Игорь Васильевич', 'отец', 48);
+insert into family (fio, family_member, age) values ('Дроздов Наталья Альбертовна', 'мать', 44);
+
+insert into accrual_clause (name) values ('Заработок');
+insert into accrual_clause (name) values ('Трата');
+
+insert into exhibit_article (name) values ('Зарплата');
+insert into exhibit_article (name) values ('Выплата за доп. работы');
+insert into exhibit_article (name) values ('Коммунальные платежи');
+insert into exhibit_article (name) values ('Покупка продуктов');
+insert into exhibit_article (name) values ('Расходы на топливо');
+insert into exhibit_article (name) values ('Расходы на развлечения');
+
+insert into crosss (id_accr, id_exh) values (1, 1);
+insert into crosss (id_accr, id_exh) values (1, 2);
+insert into crosss (id_accr, id_exh) values (2, 1);
+insert into crosss (id_accr, id_exh) values (2, 2);
+insert into crosss (id_accr, id_exh) values (2, 3);
+insert into crosss (id_accr, id_exh) values (2, 4);
+
+insert into accrual (id_family, id_accr_clause, date, sum) values (1, 1, '2019-05-22', 1215.50);
+insert into accrual (id_family, id_accr_clause, date, sum) values (4, 1, '2019-05-10', 863.701);
+insert into accrual (id_family, id_accr_clause, date, sum) values (1, 2, '2019-06-03', -213.90);
+insert into accrual (id_family, id_accr_clause, date, sum) values (3, 2, '2019-06-01', -50.50);
+
+
+select * from accrual;
+
+select * from sum_exhibition;
+
+select  fam.fio, sum(acc.sum)
+	from accrual acc
+    left join family fam on fam.id = id_family
+    where acc.sum > 0
+	group by fam.fio
