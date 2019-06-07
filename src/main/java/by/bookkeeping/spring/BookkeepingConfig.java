@@ -23,13 +23,14 @@ public class BookkeepingConfig {
         return new AccrualRepositoryImpl(dataSource());
     }
 
+
     @Bean
     DataSource dataSource() {
         DriverManagerDataSource source = new DriverManagerDataSource();
+        source.setDriverClassName(environment.getProperty("driver"));
         source.setUrl(environment.getProperty("url"));
         source.setUsername(environment.getProperty("dbuser"));
         source.setPassword(environment.getProperty("dbpassword"));
-        source.setDriverClassName(environment.getProperty("driver"));
         return source;
     }
 }

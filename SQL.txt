@@ -78,12 +78,12 @@ insert into accrual (id_family, id_accr_clause, date, sum) values (1, 2, '2019-0
 insert into accrual (id_family, id_accr_clause, date, sum) values (3, 2, '2019-06-01', -50.50);
 
 
-select * from accrual;
+    select * from accrual;
 
-select * from sum_exhibition;
+    select * from sum_exhibition;
 
-select  fam.fio, sum(acc.sum)
-	from accrual acc
-    left join family fam on fam.id = id_family
-    where acc.sum > 0
-	group by fam.fio
+    select  fam.fio, sum(acc.sum)
+        from accrual acc
+        left join family fam on fam.id = id_family
+        where acc.sum > 0
+        group by fam.fio
